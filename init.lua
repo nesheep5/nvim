@@ -47,6 +47,7 @@ local lsp_flags = {
 }
 
 local lspconfig = require("lspconfig")
+
 require("mason").setup()
 require("mason-lspconfig").setup()
 require("mason-lspconfig").setup_handlers({
@@ -61,6 +62,14 @@ require("mason-lspconfig").setup_handlers({
       capabilities = capabilities,
     })
   end,
+
+  ["eslint"] = function()
+    lspconfig.eslint.setup({
+      on_attach = on_attach,
+      root_dir = lspconfig.util.root_pattern('package.json', '.git'),
+    })
+  end,
+
   -- Next, you can provide targeted overrides for specific servers.
   ["lua_ls"] = function()
     local capabilities = require("cmp_nvim_lsp").default_capabilities()
