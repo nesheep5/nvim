@@ -17,12 +17,13 @@ require("lazy").setup({
   require 'plugins.telescope',
   require("plugins.nvim-tree"),
   require("plugins.gitsigns"),
- -- require("plugins.fzf"),
+  -- require("plugins.fzf"),
   require("plugins.nvim-cmp"),
 
   { "neovim/nvim-lspconfig" },
   { "williamboman/mason.nvim" },
   { "williamboman/mason-lspconfig.nvim" },
   require("plugins.null-ls"),
+
   require 'plugins.nvim-osc52',
 })
