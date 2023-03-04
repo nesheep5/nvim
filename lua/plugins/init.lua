@@ -24,4 +24,5 @@ require("lazy").setup({
   { "williamboman/mason.nvim" },
   { "williamboman/mason-lspconfig.nvim" },
   require("plugins.null-ls"),
+  require 'plugins.nvim-osc52',
 })
