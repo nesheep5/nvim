@@ -46,6 +46,7 @@ local lsp_flags = {
   debounce_text_changes = 150,
 }
 
+local lspconfig = require("lspconfig")
 require("mason").setup()
 require("mason-lspconfig").setup()
 require("mason-lspconfig").setup_handlers({
@@ -54,7 +55,7 @@ require("mason-lspconfig").setup_handlers({
   -- a dedicated handler.
   function(server_name) -- default handler (optional)
     local capabilities = require("cmp_nvim_lsp").default_capabilities()
-    require("lspconfig")[server_name].setup({
+    lspconfig[server_name].setup({
       on_attach = on_attach,
       flags = lsp_flags,
       capabilities = capabilities,
@@ -63,7 +64,7 @@ require("mason-lspconfig").setup_handlers({
   -- Next, you can provide targeted overrides for specific servers.
   ["lua_ls"] = function()
     local capabilities = require("cmp_nvim_lsp").default_capabilities()
-    require("lspconfig").lua_ls.setup({
+    lspconfig.lua_ls.setup({
       on_attach = on_attach,
       flags = lsp_flags,
       capabilities = capabilities,
@@ -78,7 +79,7 @@ require("mason-lspconfig").setup_handlers({
   end,
 })
 
-require("lspconfig").flow.setup({
+lspconfig.flow.setup({
   on_attach = on_attach,
   flags = lsp_flags,
 })
