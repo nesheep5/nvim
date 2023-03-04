@@ -31,6 +31,7 @@ return {
     { "<leader>ff", ":Telescope find_files<cr>", desc = "find files" },
     { "<leader>fg", ":Telescope live_grep<cr>",  desc = "live greps" },
     { "<leader>fb", ":Telescope buffers<cr>",    desc = "buffers" },
+    { "<Leader>fo", ":Telescope oldfiles<CR>",  desc = "oldfiles" },
     { "<Leader>fh", ":Telescope help_tags<CR>",  desc = "help tags" },
   },
   config = function()
