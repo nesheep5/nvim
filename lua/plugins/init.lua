@@ -20,6 +20,7 @@ require("lazy").setup({
   require("plugins.gitsigns"),
   require("plugins.fzf"),
   require("plugins.nvim-cmp"),
+  require("plugins.nvim-surround"),
 
   { "neovim/nvim-lspconfig" },
   { "williamboman/mason.nvim" },
