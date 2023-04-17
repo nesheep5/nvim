@@ -3,6 +3,11 @@ require("plugins")
 require("keymaps")
 require("options")
 
+vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
+  pattern = {'*.rbi'},
+  command = 'set syntax=ruby'
+})
+
 -- LSP settings -------------------------------------------------------
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
@@ -47,6 +52,7 @@ local lsp_flags = {
 }
 
 local lspconfig = require("lspconfig")
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 require("mason").setup()
 require("mason-lspconfig").setup()
@@ -55,7 +61,6 @@ require("mason-lspconfig").setup_handlers({
   -- and will be called for each installed server that doesn't have
   -- a dedicated handler.
   function(server_name) -- default handler (optional)
-    local capabilities = require("cmp_nvim_lsp").default_capabilities()
     lspconfig[server_name].setup({
       on_attach = on_attach,
       flags = lsp_flags,
@@ -70,13 +75,53 @@ require("mason-lspconfig").setup_handlers({
     })
   end,
 
-  -- Next, you can provide targeted overrides for specific servers.
+  ["sorbet"] = function()
+    lspconfig.sorbet.setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+      cmd = { 'bundle', 'exec', 'srb', 'tc', '--lsp' },
+    }
+  end,
+
+  ["ruby_ls"] = function()
+    lspconfig.ruby_ls.setup {
+      -- rubocopエラー表示用setting byミヒャエルさん
+      on_attach = function(client, buffer)
+        local callback = function()
+          local params = vim.lsp.util.make_text_document_params(buffer)
+          client.request(
+          'textDocument/diagnostic',
+          { textDocument = params },
+          function(err, result)
+            if err then return end
+            if result == nil then return end
+
+            vim.lsp.diagnostic.on_publish_diagnostics(
+            nil,
+            vim.tbl_extend('keep', params, { diagnostics = result.items }),
+            { client_id = client.id }
+            )
+          end
+          )
+        end
+
+         on_attach(client, buffer) -- call my common func
+        callback() -- call on attach
+
+        vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePre', 'BufReadPost', 'InsertLeave', 'TextChanged' }, {
+          buffer = buffer,
+          callback = callback,
+        })
+      end,
+    }
+  end,
+
   ["lua_ls"] = function()
-    local capabilities = require("cmp_nvim_lsp").default_capabilities()
     lspconfig.lua_ls.setup({
       on_attach = on_attach,
       flags = lsp_flags,
       capabilities = capabilities,
+
       settings = {
         Lua = {
           diagnostics = {
