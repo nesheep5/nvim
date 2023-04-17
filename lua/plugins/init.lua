@@ -16,6 +16,7 @@ require("lazy").setup({
   require("plugins.lualine"),
   require 'plugins.telescope',
   require("plugins.nvim-tree"),
+  require('plugins.nvim-treesitter'),
   require("plugins.gitsigns"),
   -- require("plugins.fzf"),
   require("plugins.nvim-cmp"),
