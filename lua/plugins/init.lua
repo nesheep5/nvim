@@ -18,7 +18,7 @@ require("lazy").setup({
   require("plugins.nvim-tree"),
   require('plugins.nvim-treesitter'),
   require("plugins.gitsigns"),
-  -- require("plugins.fzf"),
+  require("plugins.fzf"),
   require("plugins.nvim-cmp"),
 
   { "neovim/nvim-lspconfig" },
