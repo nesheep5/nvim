@@ -1,4 +1,3 @@
-
 vim.opt.number = true
 vim.opt.swapfile = false
 
@@ -9,6 +8,11 @@ end
 vim.opt.undodir = undodir
 vim.opt.undofile = true
 
+vim.opt.list = true
+vim.opt.listchars = {tab = '▸ ', trail = '·'}
+
+vim.opt.autoread = true
+vim.opt.autowrite = true
 vim.opt.keywordprg = ':help'
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
@@ -20,4 +24,9 @@ vim.opt.scrolloff = 10
 vim.opt.laststatus = 3
 
 vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
+
+--vim.api.nvim_create_autocmd({'BufNewFile','BufRead'},{
+--  puttern = {'help'},
+--  command = '<c-w>L<cr>'
+--})
 
