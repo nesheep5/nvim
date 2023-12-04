@@ -4,7 +4,7 @@ require("keymaps")
 require("options")
 
 vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
-  pattern = {'*.rbi'},
+  pattern = { '*.rbi' },
   command = 'set syntax=ruby'
 })
 
@@ -68,6 +68,13 @@ require("mason-lspconfig").setup_handlers({
     })
   end,
 
+  ["tsserver"] = function()
+    lspconfig.tsserver.setup({
+      on_attach = on_attach,
+      filetypes = { "typescript", "typescriptreact", "typescript.tsx" }, -- jsはflowに任せる
+    })
+  end,
+
   ["eslint"] = function()
     lspconfig.eslint.setup({
       on_attach = on_attach,
@@ -85,35 +92,74 @@ require("mason-lspconfig").setup_handlers({
 
   ["ruby_ls"] = function()
     lspconfig.ruby_ls.setup {
-      -- rubocopエラー表示用setting byミヒャエルさん
-      on_attach = function(client, buffer)
-        local callback = function()
-          local params = vim.lsp.util.make_text_document_params(buffer)
-          client.request(
-          'textDocument/diagnostic',
-          { textDocument = params },
-          function(err, result)
-            if err then return end
-            if result == nil then return end
+      cmd_env = {
+        BUNDLE_GEMFILE = '/home/mizuno-shogo/ghq/github.com/nesheep5/CFO-Alpha/.ruby-lsp/Gemfile', -- ここは環境によって変える
+        BUNDLE_PATH__SYSTEM = 'true',
+      },
+      cmd = { 'bundle', 'exec', 'ruby-lsp' },
+      init_options = {
+        formatter = 'syntax_tree', -- formatter を rubocop から変更する
+      },
+      on_attach = function(client, bufnr)
+        on_attach(client, bufnr) -- 必要があれば
 
-            vim.lsp.diagnostic.on_publish_diagnostics(
-            nil,
-            vim.tbl_extend('keep', params, { diagnostics = result.items }),
-            { client_id = client.id }
-            )
-          end
+        local callback = function()
+          local params = vim.lsp.util.make_text_document_params(bufnr)
+
+          client.request(
+            'textDocument/diagnostic',
+            { textDocument = params },
+            function(err, result)
+              if err then return end
+              if result == nil then return end
+
+              vim.lsp.diagnostic.on_publish_diagnostics(
+                nil,
+                vim.tbl_extend('keep', params, { diagnostics = result.items }),
+                { client_id = client.id }
+              )
+            end
           )
         end
 
-         on_attach(client, buffer) -- call my common func
         callback() -- call on attach
 
         vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePre', 'BufReadPost', 'InsertLeave', 'TextChanged' }, {
-          buffer = buffer,
+          buffer = bufnr,
           callback = callback,
         })
       end,
     }
+    -- lspconfig.ruby_ls.setup {
+    --   -- rubocopエラー表示用setting byミヒャエルさん
+    --   on_attach = function(client, buffer)
+    --     local callback = function()
+    --       local params = vim.lsp.util.make_text_document_params(buffer)
+    --       client.request(
+    --       'textDocument/diagnostic',
+    --       { textDocument = params },
+    --       function(err, result)
+    --         if err then return end
+    --         if result == nil then return end
+
+    --         vim.lsp.diagnostic.on_publish_diagnostics(
+    --         nil,
+    --         vim.tbl_extend('keep', params, { diagnostics = result.items }),
+    --         { client_id = client.id }
+    --         )
+    --       end
+    --       )
+    --     end
+
+    --      on_attach(client, buffer) -- call my common func
+    --     callback() -- call on attach
+
+    --     vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePre', 'BufReadPost', 'InsertLeave', 'TextChanged' }, {
+    --       buffer = buffer,
+    --       callback = callback,
+    --     })
+    --   end,
+    -- }
   end,
 
   ["lua_ls"] = function()

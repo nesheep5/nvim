@@ -1,6 +1,16 @@
+local function my_on_attach(bufnr)
+  local api = require "nvim-tree.api"
+
+  -- default mappings
+  api.config.mappings.default_on_attach(bufnr)
+
+  -- custom mappings
+  vim.keymap.del('n', 's', { buffer = bufnr })
+end
+
 return {
   'nvim-tree/nvim-tree.lua',
-  dependencies={
+  dependencies = {
     'nvim-tree/nvim-web-devicons'
   },
   init = function()
@@ -16,21 +26,18 @@ return {
   },
 
   config = function()
-    require("nvim-tree").setup( {
+    require("nvim-tree").setup({
+      on_attach = my_on_attach,
       sort_by = "case_sensitive",
       view = {
         width = 40,
-        mappings = {
-          list = {
-            { key = "s", action = "" },
-          },
-        },
       },
       renderer = {
         group_empty = true,
       },
+      update_focused_file = {
+        enable = true,
+      },
     })
   end,
 }
-
-

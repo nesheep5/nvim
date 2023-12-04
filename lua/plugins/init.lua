@@ -21,6 +21,7 @@ require("lazy").setup({
   require("plugins.fzf"),
   require("plugins.nvim-cmp"),
   require("plugins.nvim-surround"),
+  require("plugins.copilot"),
 
   { "neovim/nvim-lspconfig" },
   { "williamboman/mason.nvim" },
