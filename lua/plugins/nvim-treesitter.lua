@@ -5,7 +5,7 @@ return {
     end,
    config = function()
      require'nvim-treesitter.configs'.setup {
-       ensure_installed = { "fish", "lua", "vim", "help", "query", "ruby", "go" },
+       ensure_installed = { "fish", "lua", "vim", "query", "ruby", "go" },
        auto_install = true,
        highlight = {
          enable = true,
