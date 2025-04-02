@@ -1,5 +1,6 @@
 return {
   'hrsh7th/nvim-cmp',
+  tag = "v0.0.2",
   dependencies = {
     'hrsh7th/cmp-nvim-lsp',
     'hrsh7th/cmp-buffer',
@@ -9,7 +10,7 @@ return {
     'saadparwaiz1/cmp_luasnip',
   },
   config = function()
-    local cmp = require'cmp'
+    local cmp = require 'cmp'
 
     cmp.setup({
       snippet = {
@@ -33,7 +34,7 @@ return {
         { name = 'nvim_lsp' },
         { name = 'luasnip' },
       }, {
-        { name = 'buffer' },
+        { name = 'buffer', option = { keyword_pattern = [[\k\+]] } },
       })
     })
 
