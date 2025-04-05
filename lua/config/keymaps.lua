@@ -9,3 +9,8 @@ vim.keymap.set("n", "sk", "<c-w>k")
 vim.keymap.set("n", "sl", "<c-w>l")
 
 vim.keymap.set("n", "<leader>,", ":e ~/.config/nvim/init.lua<cr>")
+
+-- github url copy
+vim.keymap.set("n", "<leader>gy", function()
+  require("utils.github_url").copy_github_url()
+end, { desc = "Copy GitHub URL of current line" })
