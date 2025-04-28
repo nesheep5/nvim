@@ -8,7 +8,7 @@ vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
+local on_attach    = function(client, bufnr)
   -- Enable completion triggered by <c-x><c-o>
   vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
@@ -35,34 +35,35 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
 end
 
-local lsp_flags = {
+local lsp_flags    = {
   -- This is the default in Nvim 0.7+
   debounce_text_changes = 150,
 }
 
-local lspconfig = require("lspconfig")
+local lspconfig    = require("lspconfig")
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-lspconfig.ruby_lsp.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-  init_options = {
-    formatter = 'syntax_tree',
-  },
-}
+local util         = require("lspconfig.util")
 
 require("mason").setup()
 require("mason-lspconfig").setup()
 require("mason-lspconfig").setup_handlers({
-  -- The first entry (without a key) will be the default handler
-  -- and will be called for each installed server that doesn't have
-  -- a dedicated handler.
-  function(server_name) -- default handler (optional)
-    lspconfig[server_name].setup({
-      on_attach = on_attach,
-      flags = lsp_flags,
+
+  ["ruby_lsp"] = function()
+    lspconfig.ruby_lsp.setup {
+      on_attach    = on_attach,
       capabilities = capabilities,
-    })
+      cmd          = { "mise", "exec", "ruby@3.2.8", "--", "bundle", "exec", "ruby-lsp" },
+      root_dir     = util.root_pattern("Gemfile", ".git"),
+      init_options = { formatter = "syntax_tree" },
+    }
+  end,
+
+  ["sorbet"] = function()
+    lspconfig.sorbet.setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+      cmd = { "mise", "exec", "ruby@3.2.8", "--", 'bundle', 'exec', 'srb', 'tc', '--lsp' },
+    }
   end,
 
   ["ts_ls"] = function()
@@ -77,14 +78,6 @@ require("mason-lspconfig").setup_handlers({
       on_attach = on_attach,
       root_dir = lspconfig.util.root_pattern('package.json', '.git'),
     })
-  end,
-
-  ["sorbet"] = function()
-    lspconfig.sorbet.setup {
-      on_attach = on_attach,
-      capabilities = capabilities,
-      cmd = { 'bundle', 'exec', 'srb', 'tc', '--lsp' },
-    }
   end,
 
   -- for Lua
@@ -138,6 +131,17 @@ require("mason-lspconfig").setup_handlers({
           },
         }
       }
+    })
+  end,
+
+  -- The first entry (without a key) will be the default handler
+  -- and will be called for each installed server that doesn't have
+  -- a dedicated handler.
+  function(server_name) -- default handler (optional)
+    lspconfig[server_name].setup({
+      on_attach = on_attach,
+      flags = lsp_flags,
+      capabilities = capabilities,
     })
   end,
 
