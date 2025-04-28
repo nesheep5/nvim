@@ -27,14 +27,17 @@ return {
   },
   lazy = false, -- neo-tree will lazily load itself
   keys = {
-    { "<leader>ee", "<cmd>Neotree toggle<cr>",     desc = "Toggle NeoTree" },
-    { "<leader>f",  "<cmd>Neotree float<cr>",      desc = "NeoTree Float" },
-    { "<leader>g",  "<cmd>Neotree git_status<cr>", desc = "NeoTree Git Status" },
+    { "<leader>ee", "<cmd>Neotree toggle<cr>", desc = "Toggle NeoTree" },
   },
   opts = {
+    filesystem = {
+      follow_current_file = {
+        enabled = true,
+        leave_dirs_open = false,
+      },
+    },
     window = {
       mappings = {
-        -- Sとsを無効にする
         ["S"] = 'none',
         ["s"] = 'none',
       },
