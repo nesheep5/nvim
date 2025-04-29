@@ -1,3 +1,5 @@
+vim.keymap.set("i", "jj", "<ESC>", { desc = "Exit insert mode with jj" })
+
 -- window
 vim.keymap.set("n", "ss", "<c-w>s")
 vim.keymap.set("n", "sv", "<c-w>v")
