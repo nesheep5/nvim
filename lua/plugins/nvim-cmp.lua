@@ -8,6 +8,7 @@ return {
     'hrsh7th/cmp-cmdline',
     'L3MON4D3/LuaSnip',
     'saadparwaiz1/cmp_luasnip',
+    'onsails/lspkind-nvim',
     {
       'zbirenbaum/copilot.lua',
       cmd = "Copilot",
@@ -28,6 +29,7 @@ return {
 
   config = function()
     local cmp = require 'cmp'
+    local lspkind = require('lspkind')
 
     -- Copilot setup
     require("copilot").setup({
@@ -47,18 +49,15 @@ return {
         documentation = cmp.config.window.bordered(),
       },
       formatting = {
-        format = function(entry, vim_item)
-          local source_names = {
-            nvim_lsp = "[LSP]",
-            buffer = "[Buffer]",
-            path = "[Path]",
-            luasnip = "[Snippet]",
-            copilot = "[Copilot]",
-            cmp_git = "[Git]",
-          }
-          vim_item.menu = source_names[entry.source.name] or entry.source.name
-          return vim_item
-        end,
+        format = lspkind.cmp_format({
+          mode = 'symbol_text',
+          maxwidth = {
+            menu = 50,              -- leading text (labelDetails)
+            abbr = 50,              -- actual suggestion item
+          },
+          ellipsis_char = '...',    -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+          show_labelDetails = true, -- show labelDetails in menu. Disabled by default
+        })
       },
       mapping = cmp.mapping.preset.insert({
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
